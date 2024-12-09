@@ -1,0 +1,7 @@
+.venv
+Pipfile.lock
+.env
+server/instance
+server/migrations
+client/node_modules
+client/package-lock.json
