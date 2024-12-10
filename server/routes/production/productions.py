@@ -1,7 +1,8 @@
-from routes.__init__ import Resource, request, db, make_response, session
+from routes.__init__ import Resource, request, db, make_response, session, jwt_required
 from models.production import Production
 
 class Productions(Resource):
+    @jwt_required()
     def get(self):
         try:
             serialized_prods = [prod.to_dict() for prod in Production.query]

@@ -15,8 +15,8 @@ class User(db.Model, SerializerMixin):
 
     serialize_rules = ("-_password_hash",)
 
-    def __repr__(self):
-        return f"User #{self.id}: {self.username}, {self.email}"
+    # def __repr__(self):
+    #     return f"User #{self.id}: {self.username}, {self.email}"
 
     @hybrid_property
     def password(self):

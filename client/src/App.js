@@ -8,6 +8,12 @@ import Header from './components/navigation/Header'
 import toast, { Toaster } from "react-hot-toast"
 import "./App.css"
 
+const getCookie = (name) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
 function App() {
   const [currentUser, setCurrentUser] = useState(null)
   const [productions, setProductions] = useState([])
@@ -17,7 +23,11 @@ function App() {
   //5.✅ GET Productions
   useEffect(() => {
     (async () => {
-      const resp = await fetch("/api/v1/productions")
+      const resp = await fetch("/api/v1/productions", {
+        headers: {
+          "X-CSRF-TOKEN": getCookie("csrf_access_token")
+        }
+      })
       const data = await resp.json()
       if (resp.ok) {
         setProductions(data)
@@ -30,13 +40,28 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const resp = await fetch("/api/v1/current-user")
+      const resp = await fetch("/api/v1/current-user", {
+        headers: {
+          "X-CSRF-TOKEN": getCookie("csrf_access_token")
+        }
+      })
       const data = await resp.json()
       if (resp.ok) {
         updateUser(data)
       } else {
-        toast.error(data.error)
-        navigate("/registration")
+        const resp = await fetch("/api/v1/refresh", {
+          method: "POST",
+          headers: {
+            "X-CSRF-TOKEN": getCookie("csrf_refresh_token")
+          }
+        })
+        const refreshData = await resp.json()
+        if (resp.ok) {
+          updateUser(refreshData)
+        } else {
+          toast.error(data.error)
+          navigate("/registration")
+        }
       }
     })()
   }, [navigate])

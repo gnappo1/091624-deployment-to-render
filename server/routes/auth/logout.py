@@ -1,14 +1,19 @@
-from routes.__init__ import Resource, make_response, session
+from routes.__init__ import (
+    Resource,
+    make_response,
+    session,
+    unset_access_cookies,
+    jwt_required,
+)
+
 
 class Logout(Resource):
+    @jwt_required()
     def delete(self):
         try:
             response = make_response({}, 204)
-            #! 1. if no one is logged in, there is no one to logout
-            #! 2. but if we do, then we need to remove their traces from the session
-            if "user_id" in session:
-                del session["user_id"]
-            response.delete_cookie("session")
+            unset_access_cookies(response)
+            unset_refresh_cookies(response)
             return response
         except Exception as e:
             return make_response({"error": str(e)}, 422)

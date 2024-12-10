@@ -16,6 +16,7 @@ flask-cors = "*"
 flask-bcrypt = "*"
 flask-session = "*"
 psycopg2="*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 
